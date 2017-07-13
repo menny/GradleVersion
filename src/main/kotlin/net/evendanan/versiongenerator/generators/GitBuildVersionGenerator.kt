@@ -5,9 +5,10 @@ import net.evendanan.versiongenerator.VersionGenerator
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class GitBuildVersionGenerator(private val buildNumberOffset: Int)
+class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private val buildNumberOffset: Int)
     : VersionGenerator("GitVersionBuilder") {
 
+    constructor(buildNumberOffset: Int): this(defaultProcessRunner, buildNumberOffset)
     constructor() : this(0)
 
     override fun isValidForEnvironment(): Boolean {
@@ -16,23 +17,23 @@ class GitBuildVersionGenerator(private val buildNumberOffset: Int)
 
     override fun getVersionCode(generationData: GenerationData): Int {
         val revCount = getGitHistorySize()
-        val tagCount = ("git tag".runCommand().split("\n")).size
+        val tagCount = processRunner.runCommandForOutput("git tag").split("\n").size
 
         return revCount + tagCount + buildNumberOffset
     }
 
-    private companion object {
-        fun getGitHistorySize(): Int {
-            try {
-                return Integer.parseInt("git rev-list --count HEAD --all".runCommand())
-            } catch (e: Exception) {
-                return -1
-            }
+    private fun getGitHistorySize(): Int {
+        try {
+            return Integer.parseInt(processRunner.runCommandForOutput("git rev-list --count HEAD --all"))
+        } catch (e: Exception) {
+            return -1
         }
+    }
 
-        fun String.runCommand(): String {
+    private object defaultProcessRunner: ProcessOutput {
+        override fun runCommandForOutput(command: String): String {
             try {
-                val parts = this.split("\\s".toRegex())
+                val parts = command.split("\\s".toRegex())
                 val proc = ProcessBuilder(*parts.toTypedArray())
                         .redirectOutput(ProcessBuilder.Redirect.PIPE)
                         .redirectError(ProcessBuilder.Redirect.PIPE)
@@ -46,5 +47,10 @@ class GitBuildVersionGenerator(private val buildNumberOffset: Int)
                 return ""
             }
         }
+
+    }
+
+    interface ProcessOutput {
+        fun runCommandForOutput(command: String): String
     }
 }
