@@ -1,0 +1,50 @@
+version: 2.0
+
+references:
+
+  workspace_root: &workspace_root
+      /opt/workspace/
+
+  container_config: &container_config
+    docker:
+      - image: menny/android:1.7.1
+
+    working_directory: *workspace_root
+
+    environment:
+      TERM: dumb
+
+  general_cache_key: &general_cache_key
+      key: gradle-version-{{ checksum "build.gradle" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+jobs:
+
+  build:
+    <<: *container_config
+    steps:
+      - checkout
+
+      - restore_cache:
+          <<: *general_cache_key
+
+      - run:
+          name: Build
+          command: ./gradlew --no-daemon --stacktrace build
+
+      - store_artifacts:
+          path: /opt/workspace/build/libs/
+          destination: libs/
+
+      - run:
+          name: Check
+          command: ./gradlew --no-daemon --stacktrace check test
+
+      - store_artifacts:
+          path: /opt/workspace/build/reports/test/
+          destination: tests/
+
+      - save_cache:
+          <<: *general_cache_key
+          paths:
+            - "~/.gradle"
+            - "~/.m2"
