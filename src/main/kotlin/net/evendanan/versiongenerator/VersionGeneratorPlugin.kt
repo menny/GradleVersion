@@ -17,10 +17,6 @@ class VersionGeneratorPlugin : Plugin<Project> {
             return finishForGradle(super.generateVersion(major, minor, patchOffset, generators))
         }
 
-        override fun generateVersion(major: Int, minor: Int, patchOffset: Int): VersionData {
-            return finishForGradle(super.generateVersion(major, minor, patchOffset))
-        }
-
         private fun finishForGradle(version: VersionData): VersionData {
             println("Using %s for versioning.".format(version.generator.name))
             println("Generated version %s (version-code %d)".format(version.versionName, version.versionCode))
