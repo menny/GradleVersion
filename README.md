@@ -1,4 +1,4 @@
-# Version Generator ![at JitPack](https://jitpack.io/v/menny/GradleVersion.svg "at JitPack")
+# Version Generator ![at JitPack](https://jitpack.io/v/menny/GradleVersion.svg "at JitPack") [![CircleCI](https://circleci.com/gh/menny/GradleVersion/tree/master.svg?style=svg)](https://circleci.com/gh/menny/GradleVersion/tree/master) [![codecov](https://codecov.io/gh/menny/GradleVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/menny/GradleVersion)
 
 A very simple Gradle plugin (and/or a factory method) to generate
 version data based on environment status.
