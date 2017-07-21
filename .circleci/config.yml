@@ -13,6 +13,8 @@ references:
 
     environment:
       TERM: dumb
+      CODECOV_TOKEN: c9aef272-1cc1-41f3-b93d-ae7f4f617e12
+      COV_REPORT_LOCATION: build/reports/jacoco/test/jacocoTestReport.xml
 
   general_cache_key: &general_cache_key
       key: gradle-version-{{ checksum "build.gradle" }}-{{ checksum ".circleci/config.yml" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
@@ -37,11 +39,25 @@ jobs:
 
       - run:
           name: Check
-          command: ./gradlew --no-daemon --stacktrace check test
+          command: ./gradlew --no-daemon --stacktrace check test jacocoTestReport
 
       - store_artifacts:
           path: /opt/workspace/build/reports/test/
           destination: tests/
+
+      - store_artifacts:
+          path: /opt/workspace/build/reports/jacoco/test/html
+          destination: coverage_html/
+
+      - store_test_results:
+          path: /opt/workspace/build/test-results
+
+      - run:
+          name: Upload code coverage
+          command: |
+            if [[ -f $COV_REPORT_LOCATION ]]; then
+              ./codecov.sh -X gcov -X coveragepy -f ${COV_REPORT_LOCATION}
+            fi
 
       - save_cache:
           <<: *general_cache_key
