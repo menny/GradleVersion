@@ -56,6 +56,8 @@ jobs:
           name: Upload code coverage
           command: |
             if [[ -f $COV_REPORT_LOCATION ]]; then
+              curl https://codecov.io/bash -o codecov.sh
+              chmod +x codecov.sh
               ./codecov.sh -X gcov -X coveragepy -f ${COV_REPORT_LOCATION}
             fi
 
