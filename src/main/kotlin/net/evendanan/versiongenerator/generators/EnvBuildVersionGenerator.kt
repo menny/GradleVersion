@@ -3,7 +3,7 @@ package net.evendanan.versiongenerator.generators
 import net.evendanan.versiongenerator.GenerationData
 import net.evendanan.versiongenerator.VersionGenerator
 
-abstract class EnvBuildVersionGenerator protected constructor(name: String, private val envKey: String, private val buildNumberOffset: Int)
+abstract class EnvBuildVersionGenerator protected constructor(name: String, private val envKey: String, private val buildNumberOffset: Int, private val patchNumberOffset: Int)
     : VersionGenerator(name) {
 
     override fun isValidForEnvironment(): Boolean {
@@ -15,11 +15,16 @@ abstract class EnvBuildVersionGenerator protected constructor(name: String, priv
         return Integer.parseInt(buildNumberString) + buildNumberOffset
     }
 
-    class CircleCi(buildNumberOffset: Int) : EnvBuildVersionGenerator("CircleCiVersionGenerator", "CIRCLE_BUILD_NUM", buildNumberOffset) {
-        constructor() : this(0)
+    override fun getVersionName(generationData: GenerationData): String {
+        val patchedGenerationData = GenerationData(generationData.major, generationData.minor, generationData.patchOffset + patchNumberOffset)
+        return super.getVersionName(patchedGenerationData)
     }
 
-    class Shippable(buildNumberOffset: Int) : EnvBuildVersionGenerator("ShippableVersionGenerator", "BUILD_NUMBER", buildNumberOffset) {
-        constructor() : this(0)
+    class CircleCi(buildNumberOffset: Int, patchNumberOffset: Int) : EnvBuildVersionGenerator("CircleCiVersionGenerator", "CIRCLE_BUILD_NUM", buildNumberOffset, patchNumberOffset) {
+        constructor() : this(0, 0)
+    }
+
+    class Shippable(buildNumberOffset: Int, patchNumberOffset: Int) : EnvBuildVersionGenerator("ShippableVersionGenerator", "BUILD_NUMBER", buildNumberOffset, patchNumberOffset) {
+        constructor() : this(0, 0)
     }
 }

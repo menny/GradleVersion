@@ -14,7 +14,7 @@ class EnvBuildVersionGeneratorTest {
     val generationData = GenerationData(1, 2, 23)
     val reportedBuildNumber = 500
 
-    private fun verifyHappyPaths(envKey: String, generator: VersionGenerator, expectedVersionCode: Int) {
+    private fun verifyHappyPaths(envKey: String, generator: VersionGenerator, expectedVersionCode: Int, patchOffset: Int) {
         environmentVariables.set(envKey, null)
         Assert.assertNull(System.getenv(envKey))
         Assert.assertFalse(generator.isValidForEnvironment())
@@ -31,26 +31,26 @@ class EnvBuildVersionGeneratorTest {
         Assert.assertNotNull(versionData)
 
         Assert.assertEquals(expectedVersionCode, versionData.versionCode)
-        Assert.assertEquals("1.2." + (expectedVersionCode + generationData.patchOffset), versionData.versionName)
+        Assert.assertEquals("1.2." + (expectedVersionCode + generationData.patchOffset + patchOffset), versionData.versionName)
     }
 
     @Test
     fun testCircleCi() {
-        verifyHappyPaths("CIRCLE_BUILD_NUM", EnvBuildVersionGenerator.CircleCi(), reportedBuildNumber)
+        verifyHappyPaths("CIRCLE_BUILD_NUM", EnvBuildVersionGenerator.CircleCi(), reportedBuildNumber, 0)
     }
 
     @Test
     fun testCircleCiWithOffset() {
-        verifyHappyPaths("CIRCLE_BUILD_NUM", EnvBuildVersionGenerator.CircleCi(-10), reportedBuildNumber - 10)
+        verifyHappyPaths("CIRCLE_BUILD_NUM", EnvBuildVersionGenerator.CircleCi(-10, 9), reportedBuildNumber - 10, 9)
     }
 
     @Test
     fun testShippable() {
-        verifyHappyPaths("BUILD_NUMBER", EnvBuildVersionGenerator.Shippable(), reportedBuildNumber)
+        verifyHappyPaths("BUILD_NUMBER", EnvBuildVersionGenerator.Shippable(), reportedBuildNumber, 0)
     }
 
     @Test
     fun testShippableWithOffset() {
-        verifyHappyPaths("BUILD_NUMBER", EnvBuildVersionGenerator.Shippable(-20), reportedBuildNumber - 20)
+        verifyHappyPaths("BUILD_NUMBER", EnvBuildVersionGenerator.Shippable(-20, 100), reportedBuildNumber - 20, 100)
     }
 }

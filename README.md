@@ -16,7 +16,7 @@ Add the dependency to your `buildscript` block, in your `build.gradle` at the to
     
         dependencies {
             ...
-            classpath 'com.github.menny:GradleVersion:0.0.2'
+            classpath 'com.github.menny:GradleVersion:0.0.3'
         }
     }
 
@@ -82,10 +82,11 @@ You can change that (especially, if you have a new generator) by call `generate`
  to use:
  
     def generators = [
-            new net.evendanan.versiongenerator.generators.EnvBuildVersionGenerator.CircleCi(1650),
-            new net.evendanan.versiongenerator.generators.GitBuildVersionGenerator(-2268),
+            new net.evendanan.versiongenerator.generators.EnvBuildVersionGenerator.CircleCi(1650, 0),
+            new net.evendanan.versiongenerator.generators.GitBuildVersionGenerator(-2268, 0),
             new net.evendanan.versiongenerator.generators.StaticVersionGenerator()
     ]
     
     def versionData = versionGenerator.generateVersion(1, 8, 0, generators)
     
+[AnySoftKeyboard](https://github.com/AnySoftKeyboard/AnySoftKeyboard/blob/master/app/build.gradle) is using this plugin.

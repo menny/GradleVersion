@@ -5,11 +5,11 @@ import net.evendanan.versiongenerator.VersionGenerator
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private val buildNumberOffset: Int)
+class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private val buildNumberOffset: Int, private val patchNumberOffset: Int)
     : VersionGenerator("GitVersionBuilder") {
 
-    constructor(buildNumberOffset: Int): this(defaultProcessRunner, buildNumberOffset)
-    constructor() : this(0)
+    constructor(buildNumberOffset: Int, patchNumberOffset: Int): this(defaultProcessRunner, buildNumberOffset, patchNumberOffset)
+    constructor() : this(0, 0)
 
     override fun isValidForEnvironment(): Boolean {
         return getGitHistorySize() > 0
@@ -20,6 +20,11 @@ class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private
         val tagCount = processRunner.runCommandForOutput("git tag").split("\n").size
 
         return revCount + tagCount + buildNumberOffset
+    }
+
+    override fun getVersionName(generationData: GenerationData): String {
+        val patchedGenerationData = GenerationData(generationData.major, generationData.minor, generationData.patchOffset + patchNumberOffset)
+        return super.getVersionName(patchedGenerationData)
     }
 
     private fun getGitHistorySize(): Int {

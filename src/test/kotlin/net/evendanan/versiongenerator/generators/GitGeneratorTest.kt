@@ -30,16 +30,16 @@ class GitGeneratorTest {
 
     @Test
     fun testNoOffsetGitGenerator() {
-        val gitVersionGenerator = GitBuildVersionGenerator(fakeProcessRunner, 0)
+        val gitVersionGenerator = GitBuildVersionGenerator(fakeProcessRunner, 0, 1)
         Assert.assertTrue(gitVersionGenerator.isValidForEnvironment())
         val versionData = gitVersionGenerator.generate(generationData)
         Assert.assertEquals(13 + 93, versionData.versionCode)
-        Assert.assertEquals("0.11." + (generationData.patchOffset + 13 + 93), versionData.versionName)
+        Assert.assertEquals("0.11." + (generationData.patchOffset + 13 + 93 + 1), versionData.versionName)
     }
 
     @Test
     fun testWithOffsetGitGenerator() {
-        val gitVersionGenerator = GitBuildVersionGenerator(fakeProcessRunner, 10)
+        val gitVersionGenerator = GitBuildVersionGenerator(fakeProcessRunner, 10, 0)
         Assert.assertTrue(gitVersionGenerator.isValidForEnvironment())
         val versionData = gitVersionGenerator.generate(generationData)
         Assert.assertEquals(13 + 93 + 10, versionData.versionCode)
@@ -48,7 +48,7 @@ class GitGeneratorTest {
 
     @Test
     fun testNoGitGenerator() {
-        val gitVersionGenerator = GitBuildVersionGenerator(fakeNoGitProcessRunner, 10)
+        val gitVersionGenerator = GitBuildVersionGenerator(fakeNoGitProcessRunner, 10, -4)
         Assert.assertFalse(gitVersionGenerator.isValidForEnvironment())
     }
 }
