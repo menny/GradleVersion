@@ -17,7 +17,7 @@ class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private
 
     override fun getVersionCode(generationData: GenerationData): Int {
         val revCount = getGitHistorySize()
-        val tagCount = processRunner.runCommandForOutput("git tag").split("\n").size
+        val tagCount = processRunner.runCommandForOutput("git tag --merged").split("\n").size
 
         return revCount + tagCount + buildNumberOffset
     }
@@ -29,7 +29,7 @@ class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private
 
     private fun getGitHistorySize(): Int {
         try {
-            return Integer.parseInt(processRunner.runCommandForOutput("git rev-list --count HEAD --all"))
+            return Integer.parseInt(processRunner.runCommandForOutput("git rev-list --count HEAD"))
         } catch (e: Exception) {
             return -1
         }
