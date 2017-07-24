@@ -9,12 +9,12 @@ class GitGeneratorTest {
 
     object fakeProcessRunner : GitBuildVersionGenerator.ProcessOutput {
         override fun runCommandForOutput(command: String): String {
-            if (command.equals("git tag")) {
+            if (command.startsWith("git tag")) {
                 val builder = StringBuilder("0tag")
                 for (i in 1..12) builder.append('\n').append(i).append("tag")
 
                 return builder.toString()
-            } else if (command.equals("git rev-list --count HEAD --all")) {
+            } else if (command.startsWith("git rev-list")) {
                 return "93"
             } else {
                 throw IllegalArgumentException("No idea what to do with '%s'".format(command))
