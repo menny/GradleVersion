@@ -16,7 +16,7 @@ Add the dependency to your `buildscript` block, in your `build.gradle` at the to
     
         dependencies {
             ...
-            classpath 'com.github.menny:GradleVersion:0.0.3'
+            classpath 'com.github.menny:GradleVersion:0.0.4'
         }
     }
 
