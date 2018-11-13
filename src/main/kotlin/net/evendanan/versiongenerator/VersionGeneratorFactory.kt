@@ -1,3 +1,5 @@
+@file:JvmName("VersionGeneratorFactory")
+
 package net.evendanan.versiongenerator
 
 import net.evendanan.versiongenerator.generators.EnvBuildVersionGenerator

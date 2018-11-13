@@ -1,3 +1,5 @@
+@file:JvmName("StaticVersionGenerator")
+
 package net.evendanan.versiongenerator.generators
 
 import net.evendanan.versiongenerator.GenerationData

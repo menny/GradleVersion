@@ -1,3 +1,5 @@
+@file:JvmName("VersionGeneratorPlugin")
+
 package net.evendanan.versiongenerator
 
 import org.gradle.api.Plugin

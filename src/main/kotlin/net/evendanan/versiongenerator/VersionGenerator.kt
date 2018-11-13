@@ -1,3 +1,5 @@
+@file:JvmName("VersionGenerator")
+
 package net.evendanan.versiongenerator
 
 abstract class VersionGenerator(val name: String) {

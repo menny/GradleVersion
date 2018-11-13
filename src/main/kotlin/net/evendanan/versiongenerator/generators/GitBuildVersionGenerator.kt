@@ -1,3 +1,5 @@
+@file:JvmName("GitBuildVersionGenerator")
+
 package net.evendanan.versiongenerator.generators
 
 import net.evendanan.versiongenerator.GenerationData
@@ -8,7 +10,7 @@ import java.util.concurrent.TimeUnit
 class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private val buildNumberOffset: Int, private val patchNumberOffset: Int)
     : VersionGenerator("GitVersionBuilder") {
 
-    constructor(buildNumberOffset: Int, patchNumberOffset: Int): this(defaultProcessRunner, buildNumberOffset, patchNumberOffset)
+    constructor(buildNumberOffset: Int, patchNumberOffset: Int): this(DefaultProcessRunner, buildNumberOffset, patchNumberOffset)
     constructor() : this(0, 0)
 
     override fun isValidForEnvironment(): Boolean {
@@ -28,16 +30,16 @@ class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private
     }
 
     private fun getGitHistorySize(): Int {
-        try {
-            return Integer.parseInt(processRunner.runCommandForOutput("git rev-list --count HEAD"))
+        return try {
+            Integer.parseInt(processRunner.runCommandForOutput("git rev-list --count HEAD"))
         } catch (e: Exception) {
-            return -1
+            -1
         }
     }
 
-    private object defaultProcessRunner: ProcessOutput {
+    private object DefaultProcessRunner: ProcessOutput {
         override fun runCommandForOutput(command: String): String {
-            try {
+            return try {
                 val parts = command.split("\\s".toRegex())
                 val proc = ProcessBuilder(*parts.toTypedArray())
                         .redirectOutput(ProcessBuilder.Redirect.PIPE)
@@ -45,11 +47,11 @@ class GitBuildVersionGenerator(private val processRunner: ProcessOutput, private
                         .start()
 
                 proc.waitFor(60, TimeUnit.MINUTES)
-                return proc.inputStream.bufferedReader().readText().trim()
+                proc.inputStream.bufferedReader().readText().trim()
             } catch(e: IOException) {
                 println("runCommand IOException %s".format(e))
                 e.printStackTrace()
-                return ""
+                ""
             }
         }
 
