@@ -63,4 +63,33 @@ class EnvBuildVersionGeneratorTest {
         verifyHappyPaths("DEMO_BUILD_NUMBER",
                 EnvBuildVersionGenerator.Generic("DEMO_BUILD_NUMBER", "DEMO_BUILD_NUMBER_OFFSET", "DEMO_BUILD_NUMBER_PATCH_OFFSET"), reportedBuildNumber - 20, -15)
     }
+
+    @Test
+    fun testGenericSpecificPaths() {
+//        environmentVariables.set("DEMO_BUILD_NUMBER_OFFSET", "-20")
+//        environmentVariables.set("DEMO_BUILD_NUMBER_PATCH_OFFSET", "-15")
+//        verifyHappyPaths("DEMO_BUILD_NUMBER",
+//                , reportedBuildNumber - 20, -15)
+
+
+        var underTest = EnvBuildVersionGenerator.Generic("DEMO_BUILD_NUMBER", "DEMO_BUILD_NUMBER_OFFSET", "DEMO_BUILD_NUMBER_PATCH_OFFSET")
+        Assert.assertFalse(underTest.isValidForEnvironment())
+
+        environmentVariables.set("DEMO_BUILD_NUMBER", "30")
+        underTest = EnvBuildVersionGenerator.Generic("DEMO_BUILD_NUMBER", "DEMO_BUILD_NUMBER_OFFSET", "DEMO_BUILD_NUMBER_PATCH_OFFSET")
+        Assert.assertTrue(underTest.isValidForEnvironment())
+        Assert.assertEquals("1.0.30", underTest.generate(GenerationData(1, 0, 0)).versionName)
+
+        environmentVariables.set("DEMO_BUILD_NUMBER_OFFSET", "-10")
+        underTest = EnvBuildVersionGenerator.Generic("DEMO_BUILD_NUMBER", "DEMO_BUILD_NUMBER_OFFSET", "DEMO_BUILD_NUMBER_PATCH_OFFSET")
+        Assert.assertTrue(underTest.isValidForEnvironment())
+        Assert.assertEquals("1.0.20", underTest.generate(GenerationData(1, 0, 0)).versionName)
+        Assert.assertEquals(20, underTest.generate(GenerationData(1, 0, 0)).versionCode)
+
+        environmentVariables.set("DEMO_BUILD_NUMBER_PATCH_OFFSET", "-5")
+        underTest = EnvBuildVersionGenerator.Generic("DEMO_BUILD_NUMBER", "DEMO_BUILD_NUMBER_OFFSET", "DEMO_BUILD_NUMBER_PATCH_OFFSET")
+        Assert.assertTrue(underTest.isValidForEnvironment())
+        Assert.assertEquals("1.0.15", underTest.generate(GenerationData(1, 0, 0)).versionName)
+        Assert.assertEquals(20, underTest.generate(GenerationData(1, 0, 0)).versionCode)
+    }
 }
