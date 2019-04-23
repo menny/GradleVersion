@@ -9,10 +9,12 @@ import org.junit.contrib.java.lang.system.EnvironmentVariables
 
 class EnvBuildVersionGeneratorTest {
 
-    @Rule @JvmField val environmentVariables = EnvironmentVariables()
+    @Rule
+    @JvmField
+    val environmentVariables = EnvironmentVariables()
 
-    val generationData = GenerationData(1, 2, 23)
-    val reportedBuildNumber = 500
+    private val generationData = GenerationData(1, 2, 23)
+    private val reportedBuildNumber = 500
 
     private fun verifyHappyPaths(envKey: String, generator: VersionGenerator, expectedVersionCode: Int, patchOffset: Int) {
         environmentVariables.set(envKey, null)
@@ -52,5 +54,13 @@ class EnvBuildVersionGeneratorTest {
     @Test
     fun testShippableWithOffset() {
         verifyHappyPaths("BUILD_NUMBER", EnvBuildVersionGenerator.Shippable(-20, 100), reportedBuildNumber - 20, 100)
+    }
+
+    @Test
+    fun testGeneric() {
+        environmentVariables.set("DEMO_BUILD_NUMBER_OFFSET", "-20")
+        environmentVariables.set("DEMO_BUILD_NUMBER_PATCH_OFFSET", "-15")
+        verifyHappyPaths("DEMO_BUILD_NUMBER",
+                EnvBuildVersionGenerator.Generic("DEMO_BUILD_NUMBER", "DEMO_BUILD_NUMBER_OFFSET", "DEMO_BUILD_NUMBER_PATCH_OFFSET"), reportedBuildNumber - 20, -15)
     }
 }

@@ -29,4 +29,10 @@ abstract class EnvBuildVersionGenerator protected constructor(name: String, priv
     class Shippable(buildNumberOffset: Int, patchNumberOffset: Int) : EnvBuildVersionGenerator("ShippableVersionGenerator", "BUILD_NUMBER", buildNumberOffset, patchNumberOffset) {
         constructor() : this(0, 0)
     }
+
+    class Generic(buildCounterEnvKey: String, buildCounterOffsetEnvKey: String, patchOffsetEnvKey: String) :
+            EnvBuildVersionGenerator("GenericEnvVersionGenerator",
+                    buildCounterEnvKey,
+                    System.getenv(buildCounterOffsetEnvKey).toIntOrNull() ?: 0,
+                    System.getenv(patchOffsetEnvKey).toIntOrNull() ?: 0)
 }
