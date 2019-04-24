@@ -1,0 +1,17 @@
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    userOrg = 'menny'
+    repoName = 'net.evendanan.autoversion'
+    groupId = group
+    artifactId = name
+    publishVersion = version
+    desc = "Auto-Versioning tool ${name}"
+    website = "https://github.com/menny/GradleVersion"
+    licences = ['Apache-2.0']
+    issueTracker = 'https://github.com/menny/GradleVersion/issues'
+    autoPublish = true
+
+    bintrayUser = 'menny'
+    bintrayKey = System.getenv('BINTRAY_API_KEY')
+}

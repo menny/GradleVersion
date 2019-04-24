@@ -1,2 +1,3 @@
-rootProject.name = 'versionbuilder'
+rootProject.name = 'autoversion'
+include 'gradle-plugin'
 
