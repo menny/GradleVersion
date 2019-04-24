@@ -31,7 +31,7 @@ class VersionGeneratorPluginTest {
         val project = mock<Project>()
         val underTest = VersionGeneratorPlugin.Factory(project)
 
-        underTest.generateVersion(1, 2, 3, listOf(VersionGeneratorFactoryTest.FakeVersionGenerator("first", true, 2)))
+        underTest.generateVersion(1, 2, 3, listOf(FakeVersionGenerator("first", true, 2)))
 
         verify(project).version = "1.2.5"
     }
@@ -44,5 +44,15 @@ class VersionGeneratorPluginTest {
         underTest.generateVersion(2, 24, 2)
 
         verify(project).version = any<String>()
+    }
+
+    open class FakeVersionGenerator(name: String, private val enabled: Boolean, private val fakeVersionCode: Int) : VersionGenerator(name) {
+        override fun isValidForEnvironment(): Boolean {
+            return enabled
+        }
+
+        override fun getVersionCode(generationData: GenerationData): Int {
+            return fakeVersionCode
+        }
     }
 }
