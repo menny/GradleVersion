@@ -30,9 +30,12 @@ abstract class EnvBuildVersionGenerator protected constructor(name: String, priv
         constructor() : this(0, 0)
     }
 
-    class Generic(buildCounterEnvKey: String, buildCounterOffsetEnvKey: String, patchOffsetEnvKey: String) :
+    class Generic(buildCounterEnvKey: String, buildCounterOffset: Int, patchOffset: Int) :
             EnvBuildVersionGenerator("GenericEnvVersionGenerator",
-                    buildCounterEnvKey,
-                    System.getenv(buildCounterOffsetEnvKey)?.toIntOrNull() ?: 0,
-                    System.getenv(patchOffsetEnvKey)?.toIntOrNull() ?: 0)
+                    buildCounterEnvKey, buildCounterOffset, patchOffset) {
+        constructor(buildCounterEnvKey: String, buildCounterOffsetEnvKey: String, patchOffsetEnvKey: String) :
+                this(buildCounterEnvKey,
+                        System.getenv(buildCounterOffsetEnvKey)?.toIntOrNull() ?: 0,
+                        System.getenv(patchOffsetEnvKey)?.toIntOrNull() ?: 0)
+    }
 }

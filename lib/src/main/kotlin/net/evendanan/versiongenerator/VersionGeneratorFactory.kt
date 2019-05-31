@@ -19,6 +19,10 @@ open class VersionGeneratorFactory {
         throw IllegalStateException("Could not find any valid VersionGenerator for this environment!")
     }
 
+    open fun generateVersion(major: Int, minor: Int, generators: Iterable<VersionGenerator>): VersionData {
+        return generateVersion(major, minor, 0, generators)
+    }
+
     open fun generateVersion(major: Int, minor: Int, patchOffset: Int): VersionData {
         return generateVersion(major, minor, patchOffset,
                 listOf(EnvBuildVersionGenerator.CircleCi(),
