@@ -1,4 +1,4 @@
-# Version Generator ![at JitPack](https://jitpack.io/v/menny/GradleVersion.svg "at JitPack") [![CircleCI](https://circleci.com/gh/menny/GradleVersion/tree/master.svg?style=svg)](https://circleci.com/gh/menny/GradleVersion/tree/master) [![codecov](https://codecov.io/gh/menny/GradleVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/menny/GradleVersion)
+# Version Generator [ ![Download](https://api.bintray.com/packages/menny/net.evendanan.autoversion/gradle-plugin/images/download.svg) ](https://bintray.com/menny/net.evendanan.autoversion/gradle-plugin/_latestVersion) [![CircleCI](https://circleci.com/gh/menny/GradleVersion/tree/master.svg?style=svg)](https://circleci.com/gh/menny/GradleVersion/tree/master) [![codecov](https://codecov.io/gh/menny/GradleVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/menny/GradleVersion)
 
 A very simple Gradle plugin (and/or a factory method) to generate
 version data based on environment status.
@@ -10,27 +10,25 @@ Add the dependency to your `buildscript` block, in your `build.gradle` at the to
 	buildscript {
         repositories {
             ...
-            maven { url 'https://jitpack.io' }
+            jcenter()
             maven { url "https://plugins.gradle.org/m2/" }
         }
     
         dependencies {
             ...
-            classpath 'com.github.menny:GradleVersion:0.0.4'
+            classpath 'net.evendanan.autoversion:gradle-plugin:0.1.10'
         }
     }
-
-More information about adding dependencies: https://jitpack.io/#menny/GradleVersion/
 
 ## Usage
 
 In your `gradle.build` file apply the plugin:
 
-    apply plugin: 'net.evendanan.versiongenerator'
+    apply plugin: 'net.evendanan.autoversion'
     
 Then, generate the version data
 
-    def versionData = versionGenerator.generateVersion(1, 8, 0)
+    def versionData = versionGenerator.generateVersion(1, 8)
     
 This will apply the generated version-name to the `project.version` property.
 You may want to use the `versionData` object for other places:
@@ -59,6 +57,7 @@ Currently, built-in support for:
  *  `GitBuildVersionGenerator` - uses the number of commits + tags in the local git repo.
  *  `EnvBuildVersionGenerator.Shippable` - uses `BUILD_NUMBER` environment variable as the version number.
  *  `EnvBuildVersionGenerator.CircleCi` - uses `CIRCLE_BUILD_NUM` environment variable as the version number.
+ *  `EnvBuildVersionGenerator.Generic` - you can provide a name to an environment variable which holds the build counter.
  
 You can also implement your own generators by extending `VersionGenerator`. You'll need to implement:
 
