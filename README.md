@@ -20,9 +20,33 @@ Add the dependency to your `buildscript` block, in your `build.gradle` at the to
         }
     }
 
-## Usage
+## Usage - Simple
 
 In your `gradle.build` file apply the plugin:
+
+    apply plugin: 'net.evendanan.autoversion.simple'
+
+Set up the details:
+
+    autoVersioning {
+        buildCounterEnvKey = "CI_BUILD_COUNTER"
+        major = 1
+        minor = 0
+    }
+
+Other properties in `autoVersioning`:
+
+ * `enabled` - `true` or `false`, whether to calculate the version values or use a static versioning (always `1`). 
+ * `buildCounterEnvKey` - the name of the environment variable which holds the build-counter.
+ * `buildCounterOffset` - an integer value to add to the build-counter.
+ * `major` - the major value of the version (see https://semver.org/).
+ * `minor` - the minor value of the version (see https://semver.org/).
+ * `patchOffset` - an offset to add to the patch value of the generated version (see https://semver.org/).
+
+
+## Usage - Advance
+
+In your `gradle.build` file apply the advance plugin:
 
     apply plugin: 'net.evendanan.autoversion'
     

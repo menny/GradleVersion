@@ -8,9 +8,9 @@ import org.gradle.api.Project
 class VersionGeneratorPlugin : Plugin<Project> {
 
     override fun apply(project: Project?) {
-        if (project == null) return
-
-        project.extensions.create("versionGenerator", Factory::class.java, project)
+        project?.also {
+            it.extensions.create("versionGenerator", Factory::class.java, project)
+        }
     }
 
     //This class has to be `open` so Gradle will be able to create a Proxy to it.
@@ -24,6 +24,7 @@ class VersionGeneratorPlugin : Plugin<Project> {
             println("Generated version %s (version-code %d)".format(version.versionName, version.versionCode))
 
             project.version = version.versionName
+            project.allprojects.forEach { it.version = version.versionName }
 
             return version
         }
