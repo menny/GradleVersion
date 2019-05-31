@@ -36,9 +36,13 @@ compileTestKotlin {
 
 gradlePlugin {
     plugins {
-        simplePlugin {
+        manualPlugin {
             id = 'net.evendanan.autoversion'
             implementationClass = 'net.evendanan.versiongenerator.VersionGeneratorPlugin'
+        }
+        simplePlugin {
+            id = 'net.evendanan.autoversion.simple'
+            implementationClass = 'net.evendanan.versiongenerator.SimpleVersionGeneratorPlugin'
         }
     }
 }
