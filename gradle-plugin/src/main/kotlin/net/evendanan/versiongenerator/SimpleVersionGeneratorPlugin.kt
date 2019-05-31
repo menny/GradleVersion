@@ -11,7 +11,7 @@ class SimpleVersionGeneratorPlugin : Plugin<Project> {
 
     override fun apply(project: Project?) {
         project?.run {
-x            extensions.create("autoVersioning", SimpleConfiguration::class.java)
+            extensions.create("autoVersioning", SimpleConfiguration::class.java)
 
             afterEvaluate {
                 extensions.getByType(SimpleConfiguration::class.java).let { versionConf ->
