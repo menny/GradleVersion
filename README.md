@@ -1,4 +1,4 @@
-# Version Generator [ ![Download](https://api.bintray.com/packages/menny/net.evendanan.autoversion/gradle-plugin/images/download.svg) ](https://bintray.com/menny/net.evendanan.autoversion/gradle-plugin/_latestVersion) [![CircleCI](https://circleci.com/gh/menny/GradleVersion/tree/master.svg?style=svg)](https://circleci.com/gh/menny/GradleVersion/tree/master) [![codecov](https://codecov.io/gh/menny/GradleVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/menny/GradleVersion)
+# Version Generator [![Download](https://api.bintray.com/packages/menny/net.evendanan.autoversion/gradle-plugin/images/download.svg)](https://bintray.com/menny/net.evendanan.autoversion/gradle-plugin/_latestVersion) [![CircleCI](https://circleci.com/gh/menny/GradleVersion/tree/master.svg?style=svg)](https://circleci.com/gh/menny/GradleVersion/tree/master) [![codecov](https://codecov.io/gh/menny/GradleVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/menny/GradleVersion)
 
 A very simple Gradle plugin (and/or a factory method) to generate
 version data based on environment status.
