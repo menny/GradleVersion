@@ -15,12 +15,16 @@ class SimpleVersionGeneratorPlugin : Plugin<Project> {
 
             afterEvaluate {
                 extensions.getByType(SimpleConfiguration::class.java).let { versionConf ->
+                    if (versionConf.buildCounterEnvKey.isBlank()) {
+                        throw IllegalArgumentException("Provide the name of build-count environment variable using 'autoVersioning { buildCounterEnvKey }'")
+                    }
+
                     val generators = (if (versionConf.enabled)
                         listOf(EnvBuildVersionGenerator.Generic(versionConf.buildCounterEnvKey, versionConf.buildCounterOffset, versionConf.patchOffset))
                     else
                         emptyList()) + StaticVersionGenerator(1)
 
-                    versionConf.versionData = VersionGeneratorFactory().generateVersion(versionConf.major, versionConf.minor, versionConf.patchOffset, generators).also { verData ->
+                    versionConf.versionData = VersionGeneratorFactory().generateVersion(versionConf.major, versionConf.minor, 0, generators).also { verData ->
                         println("Generated version ${verData.versionName} (version-code ${verData.versionCode}). Using ${verData.generator.name} for versioning.")
 
                         project.version = verData.versionName
