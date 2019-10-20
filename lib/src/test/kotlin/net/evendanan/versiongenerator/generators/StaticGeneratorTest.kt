@@ -25,4 +25,13 @@ class StaticGeneratorTest {
         Assert.assertEquals(32, versionData.versionCode)
         Assert.assertEquals("2.0." + (generationData.patchOffset + 32), versionData.versionName)
     }
+
+    @Test
+    fun testStaticGeneratorProvider() {
+        val staticVersionGenerator = StaticVersionGenerator { 34 }
+        Assert.assertTrue(staticVersionGenerator.isValidForEnvironment())
+        val versionData = staticVersionGenerator.generate(generationData)
+        Assert.assertEquals(34, versionData.versionCode)
+        Assert.assertEquals("2.0." + (generationData.patchOffset + 34), versionData.versionName)
+    }
 }

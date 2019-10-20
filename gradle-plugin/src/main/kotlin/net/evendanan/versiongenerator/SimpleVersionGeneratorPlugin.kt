@@ -15,14 +15,20 @@ class SimpleVersionGeneratorPlugin : Plugin<Project> {
 
             afterEvaluate {
                 extensions.getByType(SimpleConfiguration::class.java).let { versionConf ->
-                    if (versionConf.buildCounterEnvKey.isBlank()) {
-                        throw IllegalArgumentException("Provide the name of build-count environment variable using 'autoVersioning { buildCounterEnvKey }'")
+                    require(!versionConf.buildCounterEnvKey.isBlank()) {
+                        "Provide the name of build-count environment variable using 'autoVersioning { buildCounterEnvKey }'"
                     }
 
-                    val generators = (if (versionConf.enabled)
-                        listOf(EnvBuildVersionGenerator.Generic(versionConf.buildCounterEnvKey, versionConf.buildCounterOffset, versionConf.patchOffset))
-                    else
-                        emptyList()) + StaticVersionGenerator(1)
+                    val defaultStaticGenerator = StaticVersionGenerator { versionConf.defaultBuildCount }
+                    val generators = when {
+                        project.hasProperty(FORCE_BUILD_COUNT_PROPERTY_NAME) -> listOf(StaticVersionGenerator {
+                            versionConf.buildCounterOffset +
+                                    versionConf.patchOffset +
+                                    Integer.parseInt(project.property(FORCE_BUILD_COUNT_PROPERTY_NAME).toString())
+                        })
+                        versionConf.enabled -> listOf(EnvBuildVersionGenerator.Generic(versionConf.buildCounterEnvKey, versionConf.buildCounterOffset, versionConf.patchOffset), defaultStaticGenerator)
+                        else -> listOf(defaultStaticGenerator)
+                    }
 
                     versionConf.versionData = VersionGeneratorFactory().generateVersion(versionConf.major, versionConf.minor, 0, generators).also { verData ->
                         println("Generated version ${verData.versionName} (version-code ${verData.versionCode}). Using ${verData.generator.name} for versioning.")
@@ -43,6 +49,11 @@ class SimpleVersionGeneratorPlugin : Plugin<Project> {
         var major = 1
         var minor = 0
         var patchOffset = 0
+        var defaultBuildCount = 1
         var versionData: VersionData? = null
+    }
+
+    companion object {
+        const val FORCE_BUILD_COUNT_PROPERTY_NAME = "forceVersionBuildCount"
     }
 }

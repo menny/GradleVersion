@@ -39,10 +39,12 @@ Other properties in `autoVersioning`:
  * `enabled` - `true` or `false`, whether to calculate the version values or use a static versioning (always `1`). 
  * `buildCounterEnvKey` - the name of the environment variable which holds the build-counter.
  * `buildCounterOffset` - an integer value to add to the build-counter.
+ * `defaultBuildCount` - The default build count value if disabled, or environment variable is invalid.
  * `major` - the major value of the version (see https://semver.org/).
  * `minor` - the minor value of the version (see https://semver.org/).
  * `patchOffset` - an offset to add to the patch value of the generated version (see https://semver.org/).
 
+Additionally, you can force the value of the build-counter using a command-line argument: `-PforceVersionBuildCount=233` will ignore any value of the environment variable and use the given value `233`.
 
 ## Usage - Advance
 

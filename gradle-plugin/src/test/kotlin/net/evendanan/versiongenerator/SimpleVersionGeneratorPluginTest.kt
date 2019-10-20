@@ -1,6 +1,7 @@
 package net.evendanan.versiongenerator
 
 import com.nhaarman.mockito_kotlin.*
+import net.evendanan.versiongenerator.SimpleVersionGeneratorPlugin.Companion.FORCE_BUILD_COUNT_PROPERTY_NAME
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.plugins.ExtensionContainer
@@ -85,6 +86,29 @@ class SimpleVersionGeneratorPluginTest {
     }
 
     @Test
+    fun testTakesValueFromEnvAndOffsetBuildCounter() {
+        underTest.apply(project)
+
+        val captor = argumentCaptor<Action<Project>>()
+        verify(project).afterEvaluate(captor.capture())
+
+        val settings = SimpleVersionGeneratorPlugin.SimpleConfiguration().apply {
+            buildCounterEnvKey = CI_BUILD_COUNTER_KEY
+            major = 2
+            minor = 1
+            patchOffset = 12
+            buildCounterOffset = -17
+        }
+
+        doReturn(settings).`when`(extensions).getByType(eq(SimpleVersionGeneratorPlugin.SimpleConfiguration::class.java))
+
+        captor.lastValue.execute(project)
+
+        Assert.assertNotNull(settings.versionData)
+        Assert.assertEquals("2.1.118", settings.versionData?.versionName)
+    }
+
+    @Test
     fun testOnlyUsesStaticIfDisabled() {
         underTest.apply(project)
 
@@ -127,6 +151,55 @@ class SimpleVersionGeneratorPluginTest {
 
         Assert.assertNotNull(settings.versionData)
         Assert.assertEquals("1.0.1", settings.versionData?.versionName)
+    }
+
+    @Test
+    fun testTakeForceValueWhenSpecified() {
+        doReturn(true).`when`(project).hasProperty(eq(FORCE_BUILD_COUNT_PROPERTY_NAME))
+        doReturn("120").`when`(project).property(eq(FORCE_BUILD_COUNT_PROPERTY_NAME))
+
+        underTest.apply(project)
+
+        val captor = argumentCaptor<Action<Project>>()
+        verify(project).afterEvaluate(captor.capture())
+
+        val settings = SimpleVersionGeneratorPlugin.SimpleConfiguration().apply {
+            buildCounterEnvKey = CI_BUILD_COUNTER_KEY
+            major = 2
+            minor = 1
+            patchOffset = 12
+            buildCounterOffset = -17
+        }
+
+        doReturn(settings).`when`(extensions).getByType(eq(SimpleVersionGeneratorPlugin.SimpleConfiguration::class.java))
+
+        captor.lastValue.execute(project)
+
+        Assert.assertNotNull(settings.versionData)
+        //we should get 115 since we forced the build-count to 120 (env-variable value is 123)
+        Assert.assertEquals("2.1.115", settings.versionData?.versionName)
+    }
+
+    @Test
+    fun testUsesOverrideDefaultBuildCount() {
+        environmentVariables.set(CI_BUILD_COUNTER_KEY, null)
+
+        underTest.apply(project)
+
+        val captor = argumentCaptor<Action<Project>>()
+        verify(project).afterEvaluate(captor.capture())
+
+        val settings = SimpleVersionGeneratorPlugin.SimpleConfiguration().apply {
+            buildCounterEnvKey = CI_BUILD_COUNTER_KEY
+            defaultBuildCount = 10
+        }
+
+        doReturn(settings).`when`(extensions).getByType(eq(SimpleVersionGeneratorPlugin.SimpleConfiguration::class.java))
+
+        captor.lastValue.execute(project)
+
+        Assert.assertNotNull(settings.versionData)
+        Assert.assertEquals("1.0.10", settings.versionData?.versionName)
     }
 
     companion object {
